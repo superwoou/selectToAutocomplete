@@ -241,6 +241,12 @@ THE SOFTWARE.
           }
         } else {
           var option_name = context.$text_field.val().toLowerCase();
+
+          if(option_name == "") {
+            context.$text_field.val(context.$select_field.find("option:selected").text());
+            return;
+          }
+          
           var matching_option = { 'real-value': false };
           for (var i=0; i < context.options.length; i++) {
             if ( option_name === context.options[i]['label'].toLowerCase() ) {
