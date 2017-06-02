@@ -135,48 +135,55 @@ THE SOFTWARE.
           options.sort( function( a, b ) { return a['weight'] - b['weight']; } );
         }
       }
-      
+
       // return the set of options, each with the following attributes: real-value, label, matches, weight (optional)
       return options;
     }
   };
-  
+
   var public_methods = {
     init: function( customizations ) {
-      
+
       if ( /msie/.test(navigator.userAgent.toLowerCase()) && parseInt(navigator.appVersion,10) <= 6) {
-        
+
         return this;
-        
+
       } else {
-        
+
         settings = $.extend( settings, customizations );
 
         return this.each(function(){
           var $select_field = $(this);
-          
+
           var context = {
             '$select_field': $select_field,
             'options': settings['extract_options']( $select_field ),
             'settings': settings
           };
 
+          if($select_field.data("$text_field")) {
+            context['$text_field'] = $select_field.data("$text_field");
+          } else {
+            context['$text_field'] = settings['insert_text_field']( context );
+            $select_field.data("$text_field", context['$text_field']);
+          }
+
           context['$text_field'] = settings['insert_text_field']( context );
-          
+
           settings['handle_select_field']( $select_field );
-          
+
           if ( typeof settings['autocomplete-plugin'] === 'string' ) {
             adapters[settings['autocomplete-plugin']]( context );
           } else {
             settings['autocomplete-plugin']( context );
           }
         });
-        
+
       }
-      
+
     }
   };
-  
+
   var adapters = {
     jquery_ui: function( context ) {
       // loose matching of search terms
